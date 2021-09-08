@@ -73,23 +73,29 @@ public class HttpServer {
         clientSocket.close();
     }
 
-    public String getResource(URI resourceURI) throws URISyntaxException{
-        System.out.println(resourceURI.toString());
-        String cityname = "";
-        return computeHTMLResponse(cityname);
+    public String getResource(URI resourceURI) throws URISyntaxException, IOException{
+        //System.out.println();
+        String ans = "<body>404 not found</body>";
+        if (resourceURI.toString().equals("/clima")){
+            ans = getDefaultPage();
+        }
+        else if (resourceURI.toString().contains("/consulta?")) {
+            String city = resourceURI.getQuery().split("=")[1];
+            ans = getWheaterJSON(city);
+        }
+        return ans;
     }
 
     public String computeHTMLResponse(String cityname){
         return getDefaultPage();
     }
 
-    public static JSONObject getWheaterJSON(String cityname) throws IOException{
+    public static String getWheaterJSON(String cityname) throws IOException{
+        String jsonText = HTTP_MESSAGE.replaceFirst("#", "application").replaceFirst("#", "json"); int cp;
         InputStream is = new URL(WHEATER_QUERY.replaceFirst("#", cityname)).openStream();
         BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-        String jsonText = ""; int cp;
         while ((cp = rd.read()) != -1) jsonText += (char) cp;
-        JSONObject json = new JSONObject(jsonText);
-        return json;
+        return jsonText;
     }
 
     private String getDefaultPage(){
@@ -121,7 +127,7 @@ public class HttpServer {
         +            "document.getElementById(\"user_button\").addEventListener(\"click\", () => {\n"
         +             "console.log('hey');\n"
         +                "user_city = document.getElementById(\"user_input\");\n"
-        +                "window.location.replace(window.location.href.replace(\"page.html\",\"\") + \"consulta?lugar=\" + user_city.value);\n"
+        +                "window.location.replace(window.location.href.replace(\"clima\",\"\") + \"consulta?lugar=\" + user_city.value);\n"
         +            "})\n"
         +        "});\n"
         +    "</script>\n"

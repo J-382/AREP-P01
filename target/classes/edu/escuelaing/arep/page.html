@@ -24,7 +24,7 @@
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("user_button").addEventListener("click", () => {
                 user_city = document.getElementById("user_input");
-                
+                window.location.replace(window.location.href.replace("page.html","") + "consulta?lugar=" + user_city.value);
             })
         });
     </script>
