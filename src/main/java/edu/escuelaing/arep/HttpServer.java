@@ -88,14 +88,29 @@ public class HttpServer {
         //System.out.println();
         String ans = HTTP_MESSAGE.replaceFirst("#", "text").replaceFirst("#", "html") 
             + "<body style=\"display: flex; justify-content: center; align-items: center; width: 100vw; height: 100vh;\"><h1>404 not found<h1></body>";
-        if (resourceURI.toString().equals("/clima") || resourceURI.toString().equals("/")){
+        if (resourceURI.toString().equals("/clima")){
             ans = getDefaultPage();
+        }
+        else if(resourceURI.toString().equals("/")){
+            ans = getRedirection();
         }
         else if (resourceURI.toString().contains("/consulta?")) {
             String city = resourceURI.getQuery().split("=")[1];
             ans = getWheaterJSON(city);
         }
         return ans;
+    }
+
+    private String getRedirection() {
+        String ans = HTTP_MESSAGE.replaceFirst("#", "text").replaceFirst("#", "html") 
+            +"<body>\n"
+            +    "<script>\n"
+            +        "document.addEventListener(\"DOMContentLoaded\", () => {\n"
+            +            "window.location.replace(window.location.href+ \"\\clima\");\n"
+            +        "});\n"
+            +    "</script>\n"
+            +"</body>\n";
+        return ans;   
     }
 
     public static String getWheaterJSON(String cityname) throws IOException{
