@@ -79,7 +79,8 @@ public class HttpServer {
 
     public String getResource(URI resourceURI) throws URISyntaxException, IOException{
         //System.out.println();
-        String ans = "<body>404 not found</body>";
+        String ans = HTTP_MESSAGE.replaceFirst("#", "text").replaceFirst("#", "html") 
+            + "<body style=\"display: flex; justify-content: center; align-items: center; width: 100vw; height: 100vh;\"><h1>404 not found<h1></body>";
         if (resourceURI.toString().equals("/clima")){
             ans = getDefaultPage();
         }
