@@ -68,7 +68,13 @@ public class HttpServer {
                 break;
             }
         }
-        String uriStr = request.get(0).split(" ")[1];
+        String uriStr = "/";
+        try {
+            uriStr = request.get(0).split(" ")[1];
+        } catch (Exception e) {
+            uriStr = "/";
+        }
+        
         URI resourceURI = new URI(uriStr);
         outputLine = getResource(resourceURI);
         
@@ -82,7 +88,7 @@ public class HttpServer {
         //System.out.println();
         String ans = HTTP_MESSAGE.replaceFirst("#", "text").replaceFirst("#", "html") 
             + "<body style=\"display: flex; justify-content: center; align-items: center; width: 100vw; height: 100vh;\"><h1>404 not found<h1></body>";
-        if (resourceURI.toString().equals("/clima")){
+        if (resourceURI.toString().equals("/clima") || resourceURI.toString().equals("/")){
             ans = getDefaultPage();
         }
         else if (resourceURI.toString().contains("/consulta?")) {
