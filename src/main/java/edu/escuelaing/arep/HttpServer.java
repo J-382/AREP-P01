@@ -74,12 +74,13 @@ public class HttpServer {
     }
 
     public String getResource(URI resourceURI) throws URISyntaxException{
-        String filename = resourceURI.toString().replaceFirst("/", "");
-        return computeHTMLResponse(filename);
+        System.out.println(resourceURI.toString());
+        String cityname = "";
+        return computeHTMLResponse(cityname);
     }
 
-    public String computeHTMLResponse(String filename){
-        return "";
+    public String computeHTMLResponse(String cityname){
+        return getDefaultPage();
     }
 
     public static JSONObject getWheaterJSON(String cityname) throws IOException{
@@ -90,9 +91,47 @@ public class HttpServer {
         JSONObject json = new JSONObject(jsonText);
         return json;
     }
+
+    private String getDefaultPage(){
+        String page = HTTP_MESSAGE.replaceFirst("#", "text").replaceFirst("#", "html");
+        page += "<!DOCTYPE html>\n"
+        +"<html lang=\"en\">\n"
+        +"<head>\n"
+        +    "<meta charset=\"UTF-8\">\n"
+        +    "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n"
+        +    "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+        +    "<title>Wnow</title>\n"
+        +"</head>\n"
+        +"<style>\n"
+        +    "*, *::after, *::before { margin: 0px; }\n"
+        +    "body { overflow-x: hidden; }\n"
+        +    ".container { display: flex; justify-content: center; align-items: center; width: 100vw; height: 100vh; }\n"
+        +    ".user_input { display: flex; justify-content:space-between; align-items: center; flex-direction: column; }\n"
+        +    ".user_input input{ margin-bottom: 2vh; }\n"
+        +"</style>\n"
+        +"<body>\n"
+        +    "<div class=\"container\">\n"
+        +        "<div class=\"user_input\">\n"
+        +            "<input id=\"user_input\" type=\"text\" placeholder=\"City\">\n"
+        +            "<input type=\"button\" id=\"user_button\" value=\"Let's check!\">\n"
+        +        "</div>\n"
+        +    "</div>\n"
+        +    "<script>\n"
+        +        "document.addEventListener(\"DOMContentLoaded\", () => {\n"
+        +            "document.getElementById(\"user_button\").addEventListener(\"click\", () => {\n"
+        +             "console.log('hey');\n"
+        +                "user_city = document.getElementById(\"user_input\");\n"
+        +                "window.location.replace(window.location.href.replace(\"page.html\",\"\") + \"consulta?lugar=\" + user_city.value);\n"
+        +            "})\n"
+        +        "});\n"
+        +    "</script>\n"
+        +"</body>\n"
+        +"</html>\n";
+        return page;
+    }
     
     public static void main(String[] args) throws IOException {
-        System.out.println(HttpServer.getWheaterJSON("london"));
-        //HttpServer.getInstance().start(args);
+        //System.out.println(HttpServer.getWheaterJSON("london"));
+        HttpServer.getInstance().start(args);
     }
 }
